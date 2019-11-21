@@ -3,7 +3,7 @@
 
 chkns='kubectl config view  | grep namespace:'
 kubens='f(){ kubectl config set-context $(kubectl config current-context) --namespace="$@";  unset -f f; }; f'
-
+alias k='kubectl'
 NS=consul
 NAMESPACE=$(chkns | awk '{split($0,a, ":"); print a[2]}')
 GOSSIP_ENCRYPTION_KEY=$(consul keygen)
@@ -18,7 +18,7 @@ kubens $NS
 
 echo "Creating generic consul secret ......%"
 
-kubectl create secret generic consul \
+k create secret generic consul \
   --from-literal="gossip-encryption-key=${GOSSIP_ENCRYPTION_KEY}" \
   --from-file=../../certs/ca/ca.pem \
   --from-file=../../certs/consul/consul.pem \
@@ -26,7 +26,7 @@ kubectl create secret generic consul \
 
 echo "Creating configmap from config.json ......%"
 
-kubectl -n $NS create configmap consul --from-file=config.json
+k -n $NS create configmap consul --from-file=config.json
 
 "Provision consul cluster.......%"
 
